@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 
 '''The following code is to produce a two-layer neural network to model the 
 non-linear componenets of the XOR gate. The process is as follows:
@@ -8,9 +9,34 @@ non-linear componenets of the XOR gate. The process is as follows:
     2. Set up the network.
     3. Feed the data into the network.'''
 
-# Set up data
-input_booleans = np.array([[0.,0.], [1.,0.], [0., 1.], [1., 1.]])
-target = np.array([[0.], [1.], [1.], [0.]])
+
+
+#1. Set up data
+# Read the csv
+with open('Input.csv', 'rb') as Inputcsv:
+    input = csv.reader(Inputcsv, delimiter=' ', quotechar="'")
+    input_data = [x for x in input]
+
+input_array_for_booleans = []
+
+for index in input_data:
+    input_array_for_booleans.append([float(y) for y in index[0].split(",")])
+
+print input_array_for_booleans
+
+with open('Output.csv', 'rb') as Outputcsv:
+    output = csv.reader(Outputcsv, delimiter=' ', quotechar="'")
+    output_data = [y for x in output]
+
+input_array_for_target = []
+
+for index in output_data:
+    input_array_for_target.append([float(y) for y in index[0].split(",")])
+
+print input_array_for_target
+
+input_booleans = np.array(input_array_for_booleans)
+target = np.array(input_array_for_target)
 
 
 # Set up network
