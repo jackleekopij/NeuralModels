@@ -2,7 +2,7 @@
 Storing work based on neural models
 
 
-## Training models on GCP
+## Training models on Google Cloud ML.
 The following steps will allow the training of TensorFlow models on Cloud ML. 
 1. Write your TensorFlow code. 
 2. Correctly package your code to a python package. 
@@ -16,6 +16,7 @@ An example of a simple one-layer network for the XOR gate is provided. Feel free
 
 ### 2. Correctly package your code to a python package.
 To successfully train a model on Cloud ML, the code must be submitted as a python package. This is quite easy to achieve, we simply add a blank `__init__.py` file to the directory that our TensorFlow code is in. Secondly, we must structure our code from step 1 to run as a `tf.app`. To do this, append the following to your code, where `training()` is a function that encompasses your TensorFlow model. 
+
 
 ```def main(_):
     training()
