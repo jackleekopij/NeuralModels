@@ -17,18 +17,18 @@ An example of a simple one-layer network for the XOR gate is provided. Feel free
 ### 2. Correctly package your code to a python package.
 To successfully train a model on Cloud ML, the code must be submitted as a python package. This is quite easy to achieve, we simply add a blank `__init__.py` file to the directory that our TensorFlow code is in. Secondly, we must structure our code from step 1 to run as a `tf.app`. To do this, append the following to your code, where `training()` is a function that encompasses your TensorFlow model. 
 
-`def main(_):
-    training()`
+```def main(_):
+    training()
 
-` if __name__ == "__main__": 
-    tf.app.run()`
+if __name__ == "__main__": 
+    tf.app.run()```
 
 ### 3. Run package locally to test code.
 Before you submit your job to Cloud ML, it is a good idea to run it locally. First, you need to set up the [Google Cloud SDK](https://cloud.google.com/ml-engine/docs/quickstarts/command-line) in your console which can be found [here.](https://cloud.google.com/ml-engine/docs/quickstarts/command-line) Once you have successfully set the Google Cloud SDK, you are ready to test your code locally. To test the code locally, `cd` into the root of the repository. If you `ls` the directory should contain the folder `train`. Run the following to train the model:
 
-`gcloud ml-engine local train  \
+```gcloud ml-engine local train  \
 --package-path=train \
---module-name=train.XOR`
+--module-name=train.XOR```
 
 You should see logs of the model training in your console.
 
@@ -40,17 +40,16 @@ To run your code in Cloud ML, you will need to push it to a staging bucket. This
 
 Set the following environment variables by running the following:
 
-`export STAGING_BUCKET=gs://staging-bucket-xor`
-
-`export JOB_NAME=XORgate`
+```export STAGING_BUCKET=gs://staging-bucket-xor
+export JOB_NAME=XORgate```
 
 Once you have created these environment variables, you are now ready to push your python package to Cloud ML. From the root directory, run the following command:
 
-`gcloud ml-engine jobs submit training ${JOB_NAME} \
+```gcloud ml-engine jobs submit training ${JOB_NAME} \
 --package-path=train \
 --staging-bucket="${STAGING_BUCKET}" \
 --region us-central1 \
---module-name=train.XOR`
+--module-name=train.XOR``
 
 Running this command should submit your code to Cloud ML. If the job was successfully submitted, you should get the following response:
 
