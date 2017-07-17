@@ -29,11 +29,8 @@ To successfully train a model on Cloud ML, the code must be submitted as a pytho
 Before you submit your job to Cloud ML, it is a good idea to run it locally. First, you need to set up the [Google Cloud SDK](https://cloud.google.com/ml-engine/docs/quickstarts/command-line) in your console which can be found [here.](https://cloud.google.com/ml-engine/docs/quickstarts/command-line) Once you have successfully set the Google Cloud SDK, you are ready to test your code locally. To test the code locally, `cd` into the root of the repository. If you `ls` the directory should contain the folder `train`. Run the following to train the model:
 
 `gcloud ml-engine local train  \
-
 --package-path=train \
-
---module-name=train.XOR
-`
+--module-name=train.XOR`
 
 You should see logs of the model training in your console.
 
@@ -51,13 +48,9 @@ Set the following environment variables by running the following:
 Once you have created these environment variables, you are now ready to push your python package to Cloud ML. From the root directory, run the following command:
 
 `gcloud ml-engine jobs submit training ${JOB_NAME} \
-
 --package-path=train \
-
 --staging-bucket="${STAGING_BUCKET}" \
-
 --region us-central1 \
-
 --module-name=train.XOR`
 
 Running this command should submit your code to Cloud ML. If the job was successfully submitted, you should get the following response:
