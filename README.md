@@ -18,7 +18,8 @@ An example of a simple one-layer network for the XOR gate is provided. Feel free
 To successfully train a model on Cloud ML, the code must be submitted as a python package. This is quite easy to achieve, we simply add a blank `__init__.py` file to the directory that our TensorFlow code is in. Secondly, we must structure our code from step 1 to run as a `tf.app`. To do this, append the following to your code, where `training()` is a function that encompasses your TensorFlow model. 
 
 
-``` def main(_):
+```python 
+def main(_):
     training()
 
 if __name__ == "__main__": 
