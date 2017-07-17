@@ -46,21 +46,21 @@ def training():
 
 
     # Weights of the layers
-    first_layered_weights = tf.Variable(tf.random_uniform([2,2], -2, 2))
-    second_layer_weights = tf.Variable(tf.random_uniform([2,1], -2, 2))
+    first_layered_weights = tf.Variable(tf.random_uniform([2,5], -2, 2))
+    second_layer_weights = tf.Variable(tf.random_uniform([5,1], -2, 2))
 
     # Bias for each layer
-    bias_1 = tf.Variable(tf.zeros([2]))
+    bias_1 = tf.Variable(tf.zeros([5]))
     bias_2 = tf.Variable(tf.zeros([1]))
 
 
     # Multliplication of the layers
-    Hidden_layer_output = tf.sigmoid(tf.add(tf.matmul(x_data,first_layered_weights),bias_1))
+    Hidden_layer_output = tf.nn.relu(tf.add(tf.matmul(x_data,first_layered_weights),bias_1))
     Output = tf.sigmoid(tf.add(tf.matmul(Hidden_layer_output, second_layer_weights),bias_2))
 
     # Define the cost function
-    cost = cost = - tf.reduce_mean( (target * tf.log(Output)) + (1 - target) * tf.log(1.0 - Output)  )
-    training_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+    cost = - tf.reduce_mean( (target * tf.log(Output)) + (1 - target) * tf.log(1.0 - Output)  )
+    training_step = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
 
     #3. Run the computational graph.
     init = tf.global_variables_initializer()
@@ -90,9 +90,9 @@ def training():
             print("Second layered bias: ")
             print(sess.run(bias_2))
         cost_array.append(sess.run(cost, feed_dict={x_data:input_booleans, y_data:target}))
-
-    print "Cost function over iterations:"
-    print cost_array
+        if i == 9999:
+            print "Output prediction"
+            print sess.run(Output, feed_dict={x_data: input_booleans, y_data: target})
 
 def main(_):
     training()
