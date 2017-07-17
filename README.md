@@ -62,7 +62,8 @@ gcloud ml-engine jobs submit training ${JOB_NAME} \
 
 Running this command should submit your code to Cloud ML. If the job was successfully submitted, you should get the following response:
 
-`Job [XORgate] submitted successfully.`
-
+```
+Job [XORgate] submitted successfully.
+```
 
 Once you have successfully submitted your job, it will become visible in the [Google Cloud ML console.](https://console.cloud.google.com/mlengine) It should be called `XORgate`. NOTE: Cloud ML can take a while to get provision resources and complete the training. 
