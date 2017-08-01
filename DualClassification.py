@@ -26,10 +26,10 @@ GOAL: see if a network can uncover the rules that we used to create the data.
 '''
 x1_wex= np.random.normal(400,50, 5000)
 x2_conversation = np.random.uniform(0,1, 5000)
-x3_search = np.random.normal(100, 30, 500)
+x3_search = np.random.normal(100, 30, 5000)
 
 
-output = []
+output_data = []
 input_data =np.array([])
 for index in xrange(5000):
     binary_vector = np.zeros(3)
@@ -41,14 +41,16 @@ for index in xrange(5000):
     if 300 < x1_wex[index] < 500 and x2_conversation[index] > 0.15:
         binary_vector[0] = int(1)
         binary_vector[1] = int(1)
-    print binary_vector
-    output.append(binary_vector)
+
+    if x3_search[index] < 80:
+        binary_vector[2] = int(1)
+    output_data.append(binary_vector)
 print "[Plot] Plotting x1_wex against binary_vector"
 
 
 
-x1_wex_binary = [x[0] for x in output]
-x2_conversation_binary = [x[1] for x in output]
+x1_wex_binary = [x[0] for x in output_data]
+x2_conversation_binary = [x[1] for x in output_data]
 
 zipped_input = np.array(zip(x1_wex, x2_conversation, x3_search))
 print zipped_input[1:5]
@@ -60,8 +62,8 @@ probability = float(union) / float(len([x for index,x in enumerate(x1_wex) if 30
 print probability
 #
 # Create a scatter plot
-plt.plot(x1_wex, x1_wex_binary, "o")
-plt.show()
+# plt.plot(x1_wex, x1_wex_binary, "o")
+# plt.show()
 #
 # print "[Plot] Plotting x2_conversation against binary_vector"
 #
@@ -80,9 +82,9 @@ weights_third_layer = tf.Variable(tf.random_normal(shape=[SECOND_HIDDEN_NODES,TH
 
 
 #    Bias
-bias_first_layer = tf.Variable(tf.zeros[FIRST_HIDDEN_NODES])
-bias_second_layer = tf.Variable(tf.zeros[SECOND_HIDDEN_NODES])
-output_bias_layer = tf.Variable(tf.zeros[THIRD_HIDDEN_NODES])
+bias_first_layer = tf.Variable(tf.zeros([FIRST_HIDDEN_NODES]))
+bias_second_layer = tf.Variable(tf.zeros([SECOND_HIDDEN_NODES]))
+output_bias_layer = tf.Variable(tf.zeros([THIRD_HIDDEN_NODES]))
 
 #   Node outpus
 First_hidden_layer = tf.nn.relu(tf.add(tf.matmul(x_data,weights_first_layer),bias_first_layer))
@@ -91,21 +93,28 @@ Output = tf.nn.relu(tf.add(tf.matmul(Second_hidden_layer, weights_third_layer), 
 
 #   Calculate the loss
 cost = tflearn.objectives.binary_crossentropy(Output, y_data)
-training_step = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
+training_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
 #
 #
 #
 # #  3. Run computation graph.
-# init = tf.global_variables_initializer()
-# sess = tf.Session()
-# sess.run(init)
+init = tf.global_variables_initializer()
+sess = tf.Session()
+sess.run(init)
 #
-# for i in range(50000):
-#     sess.run(training_step, feed_dict={x_data:})
+cost_vector = []
+for i in range(2000):
+    sess.run(training_step, feed_dict={x_data:zipped_input, y_data:output_data})
 
-
-
-
-
-
+    if i % 1 == 0:
+        cost_vector.append(sess.run(cost, feed_dict={x_data:zipped_input, y_data:output_data}))
+        print i
 #   4. Inspect loss function.
+    if i % 1999 == 0:
+        print "Prediction of output: " + str(sess.run(Output, feed_dict={x_data:zipped_input}))
+
+
+x_array = range(len(cost_vector))
+print "The cost vector " + str(cost_vector)
+plt.plot(x_array, cost_vector)
+plt.show()
