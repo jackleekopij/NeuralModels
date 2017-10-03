@@ -1,7 +1,13 @@
 import tensorflow as tf
+
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
+import os
+import sys
+
+
+
 
 '''The following code is to produce a two-layer neural network to model the 
 non-linear componenets of the XOR gate. The process is as follows:
@@ -38,6 +44,12 @@ non-linear componenets of the XOR gate. The process is as follows:
 # input_booleans = np.array(input_array_for_booleans)
 # target = np.array(input_array_for_target)
 def training():
+    # Set up directory to save the built models to.
+    export_directory = os.path.dirname(os.path.realpath(sys.argv[0]))
+    builder = tf.saved_model.builder.SavedModelBuilder(export_directory + "Test6")
+    print export_directory
+
+    # Create input data for the model.
     input_booleans = np.array([[0.,0.], [1.,0.], [0.,1.], [1.,1.]])
     target = np.array([[0.],[1.],[1.],[0.]])
 
@@ -48,11 +60,11 @@ def training():
 
 
     # Weights of the layers
-    first_layered_weights = tf.Variable(tf.random_uniform([2,4], -2, 2))
-    second_layer_weights = tf.Variable(tf.random_uniform([4,1], -2, 2))
+    first_layered_weights = tf.Variable(tf.random_uniform([2,5], -2, 2))
+    second_layer_weights = tf.Variable(tf.random_uniform([5,1], -2, 2))
 
     # Bias for each layer
-    bias_1 = tf.Variable(tf.zeros([4]))
+    bias_1 = tf.Variable(tf.zeros([5]))
     bias_2 = tf.Variable(tf.zeros([1]))
 
 
@@ -61,8 +73,8 @@ def training():
     Output = tf.sigmoid(tf.add(tf.matmul(Hidden_layer_output, second_layer_weights),bias_2))
 
     # Define the cost function
-    cost = cost = - tf.reduce_mean( (target * tf.log(Output)) + (1 - target) * tf.log(1.0 - Output)  )
-    training_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+    cost = - tf.reduce_mean( (target * tf.log(Output)) + (1 - target) * tf.log(1.0 - Output)  )
+    training_step = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
 
     #3. Run the computational graph.
     init = tf.global_variables_initializer()
@@ -76,8 +88,11 @@ def training():
     # Store the cost values
     cost_array = []
 
-    for i in range(10000):
+    saver = tf.train.Saver()
+
+    for i in range(10):
         sess.run(training_step, feed_dict={x_data:input_booleans, y_data:target})
+
 
 
         if i % 10 == 0:
@@ -92,8 +107,12 @@ def training():
             print("Second layered bias: ")
             print(sess.run(bias_2))
         cost_array.append(sess.run(cost, feed_dict={x_data:input_booleans, y_data:target}))
-        print sess.run(Output, feed_dict={x_data: input_booleans, y_data: target})
-
+        if i == 9999:
+            print "Output prediction"
+            print sess.run(Output, feed_dict={x_data: input_booleans, y_data: target})
+    builder.add_meta_graph_and_variables(sess, ["Tag"],signature_def_map = {"TF input":tf.saved_model.signature_def_utils.predict_signature_def(inputs= {"inputs":x_data},outputs={"outputs":cost})})
+    builder.save()
+    #saver.save(sess, 'saved_model', global_step=9999)
     print "Cost function over iterations:"
     print cost_array
     plt.plot(cost_array)
@@ -101,7 +120,7 @@ def training():
     plt.ylabel("Loss")
     plt.title("Loss function over 500 iterations.")
     plt.show()
-
+    print
 
 def main(_):
     training()
